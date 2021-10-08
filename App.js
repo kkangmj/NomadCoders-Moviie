@@ -1,21 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from "react";
+import { Text, Image } from "react-native";
+import Apploading from "expo-app-loading";
+import { Asset } from "expo-asset";
+import * as Font from "expo-font";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const [ready, setReady] = useState(false);
+  const onFinish = () => setReady(true);
+  const loadFonts = (fonts) => fonts.map((font) => Font.loadAsync(font));
+  const loadImages = (images) =>
+    images.map((image) => {
+      if (typeof image === "string") {
+        return Image.prefetch(image);
+      } else {
+        return Asset.loadAsync(image);
+      }
+    });
+  const startLoading = async () => {
+    // count notification
+    const fonts = loadFonts([Ionicons.font]);
+    const images = loadImages([
+      require("./me.jpg"),
+      "https://i0.wp.com/st.quantrimang.com/photos/image/2021/03/10/Hinh-nen-dep-cute-2.jpg?resize=640%2C1140&ssl=1",
+    ]);
+    await Promise.all([...fonts, ...images]);
+  };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  if (!ready) {
+    return (
+      <Apploading
+        startAsync={startLoading}
+        onFinish={onFinish}
+        onError={console.warn}
+      />
+    );
+  }
+  return <Text>It's all done!</Text>;
+}
