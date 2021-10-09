@@ -1,9 +1,13 @@
 import React, { useState } from "react";
-import { Text, Image } from "react-native";
+import { Text, Image, useColorScheme } from "react-native";
 import Apploading from "expo-app-loading";
 import { Asset } from "expo-asset";
 import * as Font from "expo-font";
 import { Ionicons } from "@expo/vector-icons";
+import { NavigationContainer } from "@react-navigation/native";
+import { ThemeProvider } from "styled-components/native";
+import Root from "./navigation/Root";
+import { darkTheme, lightTheme } from "./styled";
 
 export default function App() {
   const [ready, setReady] = useState(false);
@@ -27,6 +31,8 @@ export default function App() {
     await Promise.all([...fonts, ...images]);
   };
 
+  const isDark = useColorScheme() === "dark";
+
   if (!ready) {
     return (
       <Apploading
@@ -36,5 +42,12 @@ export default function App() {
       />
     );
   }
-  return <Text>It's all done!</Text>;
+
+  return (
+    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+      <NavigationContainer>
+        <Root />
+      </NavigationContainer>
+    </ThemeProvider>
+  );
 }
