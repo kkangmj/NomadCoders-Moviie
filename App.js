@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import { ThemeProvider } from "styled-components/native";
 import Root from "./navigation/Root";
-import { darkTheme, lightTheme } from "./styled";
+import { darkTheme, lightTheme } from "./theme";
 
 export default function App() {
   const [ready, setReady] = useState(false);
